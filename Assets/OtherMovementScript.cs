@@ -19,6 +19,7 @@ public class OtherMovementScript : MonoBehaviour
     private Vector3 _movement;
     private float _verticalVelocity = 0;
     private int colliderCount = 0;
+    private ScoringScript scoringScript;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class OtherMovementScript : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         _playerObject = GameObject.FindGameObjectWithTag("Player2");
+        scoringScript = GameObject.FindGameObjectWithTag("Scoring").GetComponent<ScoringScript>();
     }
 
     void Update()
@@ -40,10 +42,20 @@ public class OtherMovementScript : MonoBehaviour
             if (hit.collider.name == "Player")
             {
                 StartCoroutine(CountJump(hit.collider.name, this.name));
+                scoringScript._playerOneScore += 100d;
             }
             if (hit.collider.tag == "Terrain")
             {
-                colliderCount += 1;
+                do
+                {
+                    colliderCount += 1;
+                } while (hit.collider.tag == "Terrain");
+
+                do
+                {
+                    colliderCount -= 1;
+                } while (hit.collider.tag != "Terrain");
+
 
                 if (colliderCount == 1000)
                 {
